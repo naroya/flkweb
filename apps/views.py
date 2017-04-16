@@ -1,17 +1,21 @@
-#!/usr/bin/env python
 # -*-coding:utf-8-*-
+import os
 from flask import render_template
+from werkzeug.exceptions import abort
 from apps.blueprint import view
+
 __author__ = "Allen Woo"
 
 @view.route('/')
 def index():
     return render_template('index.html')
 
-# 其他html路由
+# 通用视图函数
 @view.route('/<path:path>')
-def pages1(path):
-    path = path.strip("/")
+def pages(path):
+    absolute_path = os.path.abspath("{}/{}/{}.html".format(os.path.dirname(__file__), view.template_folder,path))
+    print absolute_path
+    if not os.path.isfile(absolute_path):
+
+        abort(404)
     return render_template('{}.html'.format(path))
-
-
