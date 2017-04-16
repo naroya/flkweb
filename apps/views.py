@@ -6,7 +6,7 @@ __author__ = "Allen Woo"
 
 @view.route('/')
 def index():
-    return "Flask02-人人可以学python"
+    return render_template('index.html')
 
 # 其他html路由
 @view.route('/<path:path>')
