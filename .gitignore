@@ -2,7 +2,6 @@
 .nide
 !.gitignore
 .idea
-
 #python
 *~
 *.log
