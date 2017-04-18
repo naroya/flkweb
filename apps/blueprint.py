@@ -17,5 +17,6 @@ api = Blueprint('api', __name__)
 '''
 
 from apps import views
+from apps.user.apis import user
 
 

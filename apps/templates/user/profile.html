@@ -2,5 +2,46 @@
 
 {% block content %}
 <h4>用户资料</h4>
-<p>用户系统还没开发</p>
+<div>
+    用户名:
+    <span style="color:#00A600" id="username"></span>
+</div>
+<div>
+    性别:
+    <span style="color:#00A600" id="sex"></span>
+</div>
+<div>
+    年龄:
+    <span style="color:#00A600;" id="age"></span>
+</div>
+<div>
+    微信公众号:
+    <span style="color:#00A600;" id="public_no"></span>
+</div>
+
+<script>
+    // 页面一加载完就自动执行函数获取用户数据
+    $(document).ready(function(){
+      $.get("/api/user/profile",function(data,status){
+        if(status == "success"){
+            //将数据绑定到html标签中
+            $("#username").html(data.username);
+            if(data.sex == "M"){
+                $("#sex").html("男");
+            }else{
+                $("#sex").html("女");
+            }
+            $("#age").html(data.age);
+            $("#public_no").html(data.public_no);
+
+        }else{
+            alert("服务器错误");
+        }
+      });
+    });
+
+</script>
+
+
 {% endblock %}
+

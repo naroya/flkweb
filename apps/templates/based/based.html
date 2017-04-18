@@ -3,6 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <title>Flkweb-人人可以学Python</title>
+    <link rel="stylesheet" href="{{url_for('static', filename='css/bootstrap3.3.7.min.css')}}" type="text/css" />
+    <script src="{{url_for('static', filename='js/jQuery2.1.1.min.js')}}"></script>
+    <script src="{{url_for('static', filename='js/bootstrap3.3.7.min.js')}}"></script>
+
 </head>
 <body>
 {% include "based/nav.html" %}
@@ -11,4 +15,5 @@
 <!--到时我们继承这个文件的代码都会插入到这个位置-->
 {% endblock %}
 </body>
+
 </html>
