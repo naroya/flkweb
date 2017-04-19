@@ -1,0 +1,66 @@
+{% extends "based/based.html" %}
+{% block content %}
+
+<div class="row" >
+  <div class="col-xs-6 col-md-offset-3">
+      <h4>用户角色添加</h4>
+      <div class="form-group">
+        <label for="name">名称</label>
+        <input type="text" class="form-control" id="rolename" placeholder="请输入角色名称">
+      </div>
+
+     <div class="form-group">
+        <label for="name">权重</label>
+        <select id="permissions" name="myselect" class="form-control"></select>
+     </div>
+
+     <div class="form-group">
+      <input class="form-control" id="submit" type="submit" value="提交" name="submit">
+     </div>
+
+  </div>
+</div>
+<script>
+    // 页面一加载完就自动执行
+    $(document).ready(function(){
+      //获取权重数据,遍历添加到select标签
+      $.get("/api/user/role/permissions",function(data,status){
+        if(status == "success"){
+            $.each(data, function(i,v){
+                var html = "";
+                html += "<option value ="+ v[1] +">"
+                     + v[0] +"</option>";
+                $(html).appendTo($("select[name=myselect]"));
+            });
+        }else{
+            alert("服务器错误");
+        }
+      });
+    });
+
+    //当点击提交按钮,提交用于填入的数据到api
+    jQuery(document).ready(function() {
+       $("#submit").click(function(){
+            var name = $("#rolename").val();
+            var permissions = $("#permissions").val();
+            var d = {name:name, permissions:permissions};
+            // 提交数据
+            $.post("/api/user/role/add", d, function(data,status){
+                if(status == "success"){
+                    if(data.msg){
+                        alert(data.msg);
+                    }
+                }else{
+                    alert("服务器错误");
+                }
+
+            });
+       });
+    });
+
+
+</script>
+
+
+{% endblock %}
+
