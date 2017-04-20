@@ -1,0 +1,63 @@
+{% extends "based/based.html" %}
+{% block content %}
+
+<div class="row" >
+  <div class="col-xs-6 col-md-offset-3">
+      <h4>注册</h4>
+      <div class="form-group">
+        <label for="name">昵称</label>
+        <input type="text" class="form-control" id="username" placeholder="请输入昵称">
+      </div>
+      <div class="form-group">
+        <label for="name">邮箱</label>
+        <input type="email" class="form-control" id="email" placeholder="请输入邮箱">
+      </div>
+      <div class="form-group">
+        <label for="name">密码</label>
+        <input type="password" class="form-control" id="password" placeholder="至少8个字符">
+      </div>
+      <div class="form-group">
+        <label for="name">确认密码</label>
+        <input type="password" class="form-control" id="password2" placeholder="再次确认密码">
+      </div>
+
+
+     <div class="form-group">
+      <input class="form-control" id="submit" type="submit" value="注册" name="submit">
+     </div>
+
+  </div>
+</div>
+<script>
+
+    //当点击提交按钮,提交用于填入的数据到api
+    jQuery(document).ready(function() {
+       $("#submit").click(function(){
+            var username = $("#username").val();
+            var email = $("#email").val();
+            var password = $("#password").val();
+            var password2 = $("#password2").val();
+            var d = {username:username,
+                        email:email,
+                        password:password,
+                        password2:password2};
+            // 提交数据
+            $.post("/api/user/sign-up", d, function(data,status){
+                if(status == "success"){
+                    if(data.msg){
+                        alert(data.msg);
+                    }
+                }else{
+                    alert("服务器错误");
+                }
+
+            });
+       });
+    });
+
+
+</script>
+
+
+{% endblock %}
+

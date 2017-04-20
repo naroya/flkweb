@@ -1,6 +1,9 @@
 #!/usr/bin/env python
 # -*-coding:utf-8-*-
+import re
 from flask import jsonify, request
+import time
+from werkzeug.security import generate_password_hash
 from apps import config
 from apps.blueprint import api
 from apps.init_app import mongo
@@ -22,7 +25,7 @@ def add_role():
     data = {"msg":None}
     # 获取前端post的数据
     name = request.values["name"]
-    permissions = request.values["permissions"]
+    permissions = int(request.values["permissions"])
     if not name.strip():
         data = {"msg":"名字不能为空"}
     else:
@@ -33,6 +36,49 @@ def add_role():
             data = {"msg":"角色已经存在"}
         else:
             data = {"msg":"添加角色成功"}
+    return jsonify(data)
+
+@api.route('/user/sign-up',  methods=['POST'])
+def sign_up():
+
+    '''
+    只允许使用post方式请求
+    :return:
+    '''
+    data = {"msg":None}
+    # 获取前端post的数据
+    username = request.values["username"]
+    email = request.values["email"]
+    password = request.values["password"]
+    password2 = request.values["password2"]
+    if not username.strip():
+        data = {"msg":"名字不能为空"}
+    elif not re.search(r"^[a-zA-Z0-9_\-\.]+@[a-zA-Z0-9_-]+(\.[a-zA-Z0-9_-]+)+$",email.strip()):
+        data = {"msg":"邮箱地址格式不对"}
+    elif len(password.strip()) < 8:
+        data = {"msg":"密码至少8个字符"}
+    elif password.strip() != password2.strip():
+        data = {"msg":"前后密码不一致"}
+    else:
+        # 获取一个角色,默认权重使用USER
+        role_id = mongo.db.role.find_one({"permissions":config.Role.USER})["_id"]
+
+        # 对密码加密处理
+        password_hash = generate_password_hash(password)
+        user = {"username":username.strip(),
+                "email":email.strip(),
+                "password":password_hash,
+                "create_at":time.time(),
+                "role_id":role_id
+                }
+
+        if mongo.db.user.find_one({"username":username.strip()}):
+            data = {"msg":"用户名已存在"}
+        elif mongo.db.user.find_one({"email":email.strip()}):
+            data = {"msg":"此邮箱已被注册"}
+        else:
+            mongo.db.user.insert(user)
+            data = {"msg":"注册成功"}
     return jsonify(data)
 
 @api.route('/user/profile',  methods=['GET','POST'])
