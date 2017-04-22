@@ -11,3 +11,6 @@ class MongoDB():
     MONGO_DBNAME = "flkweb"
     MONGO_USERNAME = "test"
     MONGO_PASSWORD = "123456"
+
+class Secret():
+    SECRET_KEY = "sebrdntnrsthryhrthetyjetyj"

@@ -4,9 +4,12 @@ import re
 from flask import jsonify, request
 import time
 from werkzeug.security import generate_password_hash
+from werkzeug.utils import redirect
 from apps import config
 from apps.blueprint import api
 from apps.init_app import mongo
+from flask_login import current_user, login_user, logout_user, login_required
+from apps.user.process.user import User
 
 __author__ = "Allen Woo"
 
@@ -78,18 +81,66 @@ def sign_up():
             data = {"msg":"此邮箱已被注册"}
         else:
             mongo.db.user.insert(user)
-            data = {"msg":"注册成功"}
+            data = {"msg":"注册成功", "url":"/sign-in"}
     return jsonify(data)
 
+
+@api.route('/user/sign-in',  methods=['POST'])
+def sign_in(adm = False):
+
+    '''
+    用户登录api
+    :param adm:
+    :return:
+    '''
+
+    _data = {}
+    if current_user.is_authenticated:
+        data = {"msg":"已经登录", "url":"/"}
+        return jsonify(data)
+    username = request.values['username'].strip()
+    password = request.values['password'].strip()
+    remember_me = request.values['remember_me']
+
+    # 判断用户是使用名字还是邮箱登录
+    if "." in username and '@' in username:
+        user = mongo.db.user.find_one({"email":username})
+    else:
+        user = mongo.db.user.find_one({"username":username})
+    if user:
+        user = User(user["_id"])
+        # 密码验证
+        if user.verify_password(password) and not user.is_delete:
+            if user.is_active:
+                login_user(user, remember_me)
+                data = {"msg":"登录成功", "url":"/"}
+            else:
+                data = {"msg":"账户未激活"}
+    else:
+        data = {"msg":"账户或密码错误"}
+    return jsonify(data)
+
+@api.route('/user/sign-out',  methods=['GET'])
+def sign_out():
+
+    '''
+    用户登录api
+    :param adm:
+    :return:
+    '''
+    logout_user()
+    # 退出后跳到主页
+    return redirect("/")
+
+
 @api.route('/user/profile',  methods=['GET','POST'])
-def index():
+def user_profile():
     '''
     只允许使用get和post方式请求
     :return:
     '''
-    data = {"username":"Allen Woo",
-            "sex":"M",
-            "age":23,
-            "public_no":"人人可以学Python"}
+    user = mongo.db.user.find_one({"_id":current_user.id})
+    data = {"username":user["username"],
+            "email":user["email"]}
 
     return jsonify(data)

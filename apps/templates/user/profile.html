@@ -7,6 +7,10 @@
     <span style="color:#00A600" id="username"></span>
 </div>
 <div>
+    邮箱:
+    <span style="color:#00A600" id="email"></span>
+</div>
+<div>
     性别:
     <span style="color:#00A600" id="sex"></span>
 </div>
@@ -25,10 +29,12 @@
       $.get("/api/user/profile",function(data,status){
         if(status == "success"){
             //将数据绑定到html标签中
+
             $("#username").html(data.username);
+            $("#email").html(data.email);
             if(data.sex == "M"){
                 $("#sex").html("男");
-            }else{
+            }else if(data.sex == "F"){
                 $("#sex").html("女");
             }
             $("#age").html(data.age);

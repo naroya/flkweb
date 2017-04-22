@@ -15,5 +15,3 @@ class Role():
     USER = 0b00000001
     ADMIN =0b01000000
     ROOT  =0b10000000
-
-

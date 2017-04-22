@@ -3,27 +3,22 @@
 
 <div class="row" >
   <div class="col-xs-6 col-md-offset-3">
-      <h4>注册</h4>
+      <h4>登录</h4>
       <div class="form-group">
-        <label for="name">昵称</label>
+        <label for="name">昵称或邮箱</label>
         <input type="text" class="form-control" id="username" placeholder="请输入昵称">
       </div>
       <div class="form-group">
-        <label for="name">邮箱</label>
-        <input type="email" class="form-control" id="email" placeholder="请输入邮箱">
-      </div>
-      <div class="form-group">
         <label for="name">密码</label>
-        <input type="password" class="form-control" id="password" placeholder="至少8个字符">
+        <input type="password" class="form-control" id="password" placeholder="输入密码">
       </div>
-      <div class="form-group">
-        <label for="name">确认密码</label>
-        <input type="password" class="form-control" id="password2" placeholder="再次确认密码">
-      </div>
-
-
+      <div class="checkbox">
+        <label>
+            <input id="remember_me" type="checkbox">记住登录
+        </label>
+        </div>
      <div class="form-group">
-      <input class="form-control" id="submit" type="submit" value="注册" name="submit">
+      <input class="form-control" id="submit" type="submit" value="登录" name="submit">
      </div>
 
   </div>
@@ -34,21 +29,21 @@
     jQuery(document).ready(function() {
        $("#submit").click(function(){
             var username = $("#username").val();
-            var email = $("#email").val();
             var password = $("#password").val();
-            var password2 = $("#password2").val();
+            var remember_me = $("#remember_me").val();
             var d = {username:username,
-                        email:email,
-                        password:password,
-                        password2:password2};
+                     password:password,
+                     remember_me:remember_me};
             // 提交数据
-            $.post("/api/user/sign-up", d, function(data,status){
+            $.post("/api/user/sign-in", d, function(data,status){
                 if(status == "success"){
                     if(data.msg){
                         alert(data.msg);
                         if(data.url){
-                             location.href = data.url
+                            //登录成功就调转到返回的页面
+                            location.href = data.url
                         }
+
                     }
                 }else{
                     alert("服务器错误");
@@ -60,7 +55,6 @@
 
 
 </script>
-
 
 {% endblock %}
 
