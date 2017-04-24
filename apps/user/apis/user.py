@@ -94,7 +94,7 @@ def sign_in(adm = False):
     :return:
     '''
 
-    _data = {}
+    data = {}
     if current_user.is_authenticated:
         data = {"msg":"已经登录", "url":"/"}
         return jsonify(data)
@@ -116,11 +116,14 @@ def sign_in(adm = False):
                 data = {"msg":"登录成功", "url":"/"}
             else:
                 data = {"msg":"账户未激活"}
+        else:
+            data = {"msg":"账户或密码错误"}
     else:
         data = {"msg":"账户或密码错误"}
     return jsonify(data)
 
 @api.route('/user/sign-out',  methods=['GET'])
+@login_required
 def sign_out():
 
     '''
@@ -134,6 +137,7 @@ def sign_out():
 
 
 @api.route('/user/profile',  methods=['GET','POST'])
+@login_required
 def user_profile():
     '''
     只允许使用get和post方式请求
