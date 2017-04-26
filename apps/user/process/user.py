@@ -39,16 +39,16 @@ class User(UserMixin):
         return check_password_hash(self.password_hash, password)
 
     def auth_judge(self, permissions):
-        role = mongo.role.find_one({"_id":self.role_id})
+        role = mongo.db.role.find_one({"_id":self.role_id})
         return role and permissions <= role.permissions  and self.active and not self.is_delete
 
     def can(self, permissions):
-        role = mongo.role.find_one({"_id":self.role_id})
-        return role and permissions <= role.permissions and self.active and not self.is_delete
+        role = mongo.db.role.find_one({"_id":self.role_id})
+        return role and permissions <= role["permissions"] and self.active and not self.is_delete
 
     def is_this_role(self, permissions):
-        role = mongo.role.find_one({"_id":self.role_id})
-        return role and permissions == role.permissions and self.active and not self.is_delete
+        role = mongo.db.role.find_one({"_id":self.role_id})
+        return role and permissions == role["permissions"] and self.active and not self.is_delete
 
     @property
     def is_administrator(self):

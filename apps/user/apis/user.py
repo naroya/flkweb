@@ -9,6 +9,7 @@ from apps import config
 from apps.blueprint import api
 from apps.init_app import mongo
 from flask_login import current_user, login_user, logout_user, login_required
+from apps.user.process.permissions import permission_required
 from apps.user.process.user import User
 
 __author__ = "Allen Woo"
@@ -18,7 +19,9 @@ __author__ = "Allen Woo"
 def permissions():
     return jsonify(config.Role.PERMISSIONS)
 
+
 @api.route('/user/role/add',  methods=['POST'])
+@permission_required(config.Role.ADMIN)
 def add_role():
 
     '''
@@ -143,6 +146,7 @@ def user_profile():
     只允许使用get和post方式请求
     :return:
     '''
+    print current_user.is_root
     user = mongo.db.user.find_one({"_id":current_user.id})
     data = {"username":user["username"],
             "email":user["email"]}
